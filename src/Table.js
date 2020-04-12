@@ -11,9 +11,10 @@ const TableHeader = () => {
     )
 }
 
+//<button onClick={(args) => function()}>ButtonText</button>
+
 const TableBody = props => {
     const rows = props.characterData.map((row, index) => {
-        //<button onClick={(args) => function()}>ButtonText</button>
         return (
             <tr key={index}>
                 <td>{row.name}</td>
