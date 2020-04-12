@@ -6,24 +6,7 @@ class App extends Component {
   
   //State is local and publicly accessible for every component
   state = {
-    characters: [
-      {
-        name: 'Charlie',
-        job: 'Janitor'
-      },
-      {
-        name: 'Mac',
-        job: 'Bouncer'
-      },
-      {
-        name: 'Dee',
-        job: 'Aspiring actress'
-      },
-      {
-        name: 'Dennis',
-        job: 'Bartender'
-      }
-    ]
+    characters: [],
   }
 
   //Still not super sure about this function declaration syntax, try with traditional parentheses
@@ -38,15 +21,19 @@ class App extends Component {
     })
   }
 
+  handleSubmit = character => {
+    this.setState({ characters: [...this.state.characters, character] })
+  }
+
 
   render() {
     const { characters } = this.state
 
     return (
-      <div className="container">
-        <Table characterData={characters} removeCharacter={this.removeCharacter} />
-        <Form />
-      </div>
+        <div className="container">
+          <Table characterData={characters} removeCharacter={this.removeCharacter} />
+          <Form handleSubmit={this.handleSubmit} />
+        </div>
     )
   }
 }
