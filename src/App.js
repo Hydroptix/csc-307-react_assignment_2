@@ -1,41 +1,57 @@
-import React, { Component } from 'react'
-import Table from './Table'
-import Form from './Form'
+import React, { Component } from 'react';
+import Table from './Table';
+import Form from './Form';
+import axios from 'axios';
 
 class App extends Component {
-  
-  //State is local and publicly accessible for every component
-  state = {
-    characters: [],
-  }
+    state = {
+        users : [],
+    }
 
-  //Still not super sure about this function declaration syntax, try with traditional parentheses
-  removeCharacter = index => {
-    const { characters } = this.state
+    removeUser = index => {
+        const { users } = this.state
 
-    //Create a new array, but if the index matches the index passed in, don't include it
-    this.setState({
-      characters: characters.filter((character, i) => {
-        return i !== index
-      }),
-    })
-  }
+        this.setState({
+            users: users.filter((user, i) => {
+                return i !== index;
+            }),
+        })
+    }
 
-  handleSubmit = character => {
-    this.setState({ characters: [...this.state.characters, character] })
-  }
+    componentDidMount() {
+        axios.get('http://localhost:5000/users')
+            .then(res => {
+                const users = [];
 
+                //My backend responds with a dictionary of users keyed by ID instead of a list of users, so
+                //I'm converting that dictionary to a list here. Probably will abstract this out somewhere later
+                const resp_dict = res.data.users_list;
+                for (var key in resp_dict) {
+                    users.push(resp_dict[key])
+                }
 
-  render() {
-    const { characters } = this.state
+                this.setState({ users: users });
+            })
+            .catch(function (error) {
+                //Not handling the error. Just logging into the console.
+                console.log(error);
+            });
+    }
 
-    return (
-        <div className="container">
-          <Table characterData={characters} removeCharacter={this.removeCharacter} />
-          <Form handleSubmit={this.handleSubmit} />
-        </div>
-    )
-  }
+    handleSubmit = user => {
+        this.setState({ users: [...this.state.users, user] })
+    }
+
+    render() {
+        const {users} = this.state;
+
+        return (
+            <div className="container">
+                <Table usersData={users} removeUser={this.removeUser} />
+                <Form handleSubmit={this.handleSubmit}/>
+            </div>
+        )
+    }
 }
 
-export default App
+export default App;
