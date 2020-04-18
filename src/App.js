@@ -11,10 +11,19 @@ class App extends Component {
     removeUser = index => {
         const { users } = this.state
 
-        this.setState({
-            users: users.filter((user, i) => {
-                return i !== index;
-            }),
+        const userId = users[index]['id']
+        console.log(userId)
+
+        this.makeDeleteCall(userId).then(response => {
+            console.log(response.status)
+
+            if (response.status === 200) {
+                this.setState({
+                    users: users.filter((user, i) => {
+                        return i !== index;
+                    }),
+                })
+            }
         })
     }
 
@@ -42,7 +51,20 @@ class App extends Component {
         return axios.post('http://localhost:5000/users', user)
             .then(function (response) {
                 console.log(response);
-                return (response.status === 201);
+                return(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+                return false;
+            });
+    }
+
+    makeDeleteCall(userId) {
+        return axios.delete(`http://localhost:5000/users/${userId}`)
+            .then(function (response) {
+                console.log("makeDeleteCall: ")
+                console.log(response);
+                return(response);
             })
             .catch(function (error) {
                 console.log(error);
@@ -51,13 +73,14 @@ class App extends Component {
     }
 
     handleSubmit = user => {
-        this.makePostCall(user).then( callResult => {
-            if (callResult === true) {
-                this.setState( {users : [...this.state.users, user]});
+        console.log(user)
+        this.makePostCall(user).then( response => {
+            if (response.status === 201) {
+
+                this.setState( {users : [...this.state.users, response.data]});
             }
         });
 
-        this.setState({ users: [...this.state.users, user] })
     }
 
     render() {
