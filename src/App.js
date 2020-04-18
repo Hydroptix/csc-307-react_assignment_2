@@ -38,7 +38,25 @@ class App extends Component {
             });
     }
 
+    makePostCall(user){
+        return axios.post('http://localhost:5000/users', user)
+            .then(function (response) {
+                console.log(response);
+                return (response.status === 201);
+            })
+            .catch(function (error) {
+                console.log(error);
+                return false;
+            });
+    }
+
     handleSubmit = user => {
+        this.makePostCall(user).then( callResult => {
+            if (callResult === true) {
+                this.setState( {users : [...this.state.users, user]});
+            }
+        });
+
         this.setState({ users: [...this.state.users, user] })
     }
 
